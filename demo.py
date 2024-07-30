@@ -16,22 +16,38 @@ def main():
 
     args = parser.parse_args()
 
-    benchmark_results = []
+    benchmark_results = {
+        "cpu": [],
+        "network": []
+    }
 
     if args.asyncio:
-        asyncio_results = asyncio_demo.run()
-        benchmark_results.append(("asyncio", asyncio_results))
+        asyncio_results_blocking = asyncio_demo.run_blocking()
+        benchmark_results["network"].append(("asyncio_blocking", asyncio_results_blocking))
+
+        asyncio_results_non_blocking = asyncio_demo.run_non_blocking()
+        benchmark_results["network"].append(("asyncio_non_blocking", asyncio_results_non_blocking))
+
+        asyncio_results_cpu = asyncio_demo.run_cpu_bound()
+        benchmark_results["cpu"].append(("asyncio_cpu", asyncio_results_cpu))
 
     if args.multiprocessing:
         mp_results = multiprocessing_demo.run()
-        benchmark_results.append(("multiprocessing", mp_results))
+        benchmark_results["network"].append(("multiprocessing", mp_results))
+
+        mp_results_cpu = multiprocessing_demo.run_cpu_bound()
+        benchmark_results["cpu"].append(("multiprocessing_cpu", mp_results_cpu))
 
     if args.threading:
         threading_results = threading_demo.run()
-        benchmark_results.append(("threading", threading_results))
+        benchmark_results["network"].append(("threading", threading_results))
 
-    for variation, result in benchmark_results:
-        print(f"{variation}: {result} seconds")
+        threading_results_cpu = threading_demo.run_cpu_bound()
+        benchmark_results["cpu"].append(("threading_cpu", threading_results_cpu))
 
+    for test, results in benchmark_results.items():
+        print(f"{test} bounded benchmarks:")
+        for variation, result in results:
+            print(f"    {variation}: {result}")
 if __name__ == '__main__':
     main()
