@@ -1,6 +1,9 @@
 """Demo different Concurrency libraries"""
 
 import argparse
+
+import matplotlib.pyplot as plt
+
 import asyncio_benchmarks
 import multiprocessing_benchmarks
 import threading_benchmarks
@@ -59,9 +62,22 @@ def main():
         )
 
     for test, results in benchmark_results.items():
-        print(f"{test} bounded benchmarks:")
+        print(f"{test.capitalize()} Bounded Benchmarks:")
         for variation, result in results:
-            print(f"    {variation}: {result}")
+            print(f"\t{variation}: {result}")
+
+        variations = [variation for variation, _ in results]
+        scores = [result for _, result in results]
+
+        plt.figure(figsize=(10, 6))
+        plt.bar(variations, scores)
+        plt.title(f"{test.capitalize()} Bounded Benchmarks")
+        plt.xlabel("Benchmark Variation")
+        plt.ylabel("Time (s)")
+        plt.xticks(rotation=45, ha="right")
+        plt.tight_layout()
+
+        plt.show()
 
 
 if __name__ == "__main__":
