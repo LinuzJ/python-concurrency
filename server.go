@@ -6,7 +6,7 @@ import (
 )
 
 func veryAdvancedCalculationsHandler(w http.ResponseWriter, r *http.Request) {
-	var importantNumber = 10000
+	var importantNumber = 500
 	
 	// Allocate big useless array
 	uselessArray := make([][]int, importantNumber)
